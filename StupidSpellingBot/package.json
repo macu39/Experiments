@@ -1,0 +1,15 @@
+{
+  "name": "ssb",
+  "version": "1.0.0",
+  "description": "stupid spelling bot",
+  "main": "bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "simple-spellchecker": "^0.9.9",
+    "telebot": "^1.2.6"
+  }
+}
