@@ -1,7 +1,7 @@
 {
-  "name": "ssb",
+  "name": "sscb",
   "version": "1.0.0",
-  "description": "stupid spelling bot",
+  "description": "stupid spell check bot",
   "main": "bot.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
