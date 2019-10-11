@@ -1,9 +1,10 @@
-const SpellChecker = require('simple-spellchecker');
+const SpellChecker = require ('spellchecker');
 const TeleBot = require('telebot');
 const config = require('./config.js')
 
 // Load Dictionary
-const dict = SpellChecker.getDictionarySync(config.lang)
+//const dict = SpellChecker.getDictionarySync(config.lang)
+const spellChecker = new SpellChecker.Spellchecker()
 
 // Start the bot
 const bot = new TeleBot(config.telegramSecret);
@@ -17,11 +18,15 @@ const timeBetweenErrors = 10000 // 10s
 
 function checkSpell(msg) {
     let words = msg.text.split(" ");
-    for (let word of words) {
-        if (dict.isMisspelled(word)){
-            correctWords = dict.getSuggestions(word, 1)
-            msg.reply.text(getBadWord() + correctWords[0])
-        }
+    let mistakes = SpellChecker.checkSpelling(msg.text)
+    let corrections = []
+    for (let mistake of mistakes) {
+        let word = msg.text.substring(mistake.start, mistake.end)
+        let correctedWord = SpellChecker.getCorrectionsForMisspelling(word)
+        corrections.push(word + " -> " + correctedWord[0])
+    }
+    if (corrections.length > 0) {
+        msg.reply.text(getBadWord() + " \n" + corrections.join("\n"))
     }
 }
 

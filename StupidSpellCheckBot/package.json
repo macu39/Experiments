@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "simple-spellchecker": "^0.9.9",
+    "spellchecker": "^3.7.0",
     "telebot": "^1.2.6"
   }
 }
