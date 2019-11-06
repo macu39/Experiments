@@ -94,8 +94,6 @@ class Recording{
         this.selector = selector;
         this.recording = []
         this.startTime = 0
-
-
         this.pointer = new Pointer(pointerImg)
         this.background = new Background(selector)
     }
@@ -106,7 +104,7 @@ class Recording{
         this.pointer.hidePointer()
         this.background.hideBackground()
 
-        this.observer = new MutationObserver(this._handleBackgroundChange);
+        this.observer = new MutationObserver(this._handleBackgroundChange.bind(this));
         const config = { attributes: true, childList: true, subtree: true };
         this.observer.observe(this.selector, config);
 
@@ -117,27 +115,23 @@ class Recording{
         this.scrollListener = this._handleBackgroundChange.bind(this)
         this.selector.addEventListener("scroll", this.scrollListener);
         this.resiezeListener = this._handleBackgroundChange.bind(this)
-        this.selector.addEventListener("resize", this.resiezeListener);
+        window.addEventListener("resize", this.resiezeListener);
     }
 
     stopRecording(){
-
         this.observer.disconnect()
-
         this.selector.removeEventListener("click", this.clickListener);
         this.selector.removeEventListener("mousemove", this.moveListener);
         this.selector.removeEventListener("scroll", this.scrollListener);
-        this.selector.removeEventListener("resize", this.resiezeListener);
+        window.removeEventListener("resize", this.resiezeListener);
     }
 
     playRecording(){
         this.stopRecording()
-
         this.pointer.resetPointer()
         this.pointer.showPointer()
-        //this.background.resetBackground()
-        //this.background.showBackground()
-
+        this.background.resetBackground()
+        this.background.showBackground()
         this._preformActions(0)
     }
 
@@ -146,11 +140,11 @@ class Recording{
     }
 
     downloadRecording(){
-
+        //TODO
     }
 
     uploadRecording(){
-
+        //TODO
     }
 
     _handleClick(e){
