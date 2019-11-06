@@ -4,7 +4,11 @@
 <a onclick="recording.stopRecording()">STOP</a>  ###
 <a onclick="recording.playRecording()">PLAY</a> -
 <a onclick="recording.pauseRecording()">PAUSE</a> -
-<a onclick="recording.stopPlayRecording()">STOP</a>
+<a onclick="recording.stopPlayRecording()">STOP</a> ###
+<a onclick="recording.downloadRecording('video.json')">DOWNLOAD</a>
 
 
 <script src="js/htmlScreenRecorder.js"></script>
+<script>
+    var recording = new Recording(document.body, "img/pointer.png")
+</script>

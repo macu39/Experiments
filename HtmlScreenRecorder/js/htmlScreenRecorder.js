@@ -94,8 +94,11 @@ class Recording{
         this.selector = selector;
         this.recording = []
         this.startTime = 0
+        this.isPlaying = false
+        this.currentFrame = 0
         this.pointer = new Pointer(pointerImg)
         this.background = new Background(selector)
+        this._createDownloadElement()
     }
 
     startRecording(){
@@ -127,32 +130,55 @@ class Recording{
     }
 
     playRecording(){
-        this.stopRecording()
-        this.pointer.resetPointer()
-        this.pointer.showPointer()
-        this.background.resetBackground()
-        this.background.showBackground()
-        this._preformActions(0)
+        if (!this.isPlaying){
+            this.stopRecording()
+            this.isPlaying = true
+            this.pointer.resetPointer()
+            this.pointer.showPointer()
+            this.background.resetBackground()
+            this.background.showBackground()
+            this._executeFrames(this.currentFrame)
+        }
     }
 
     pauseRecording(){
-        //TODO
+        this.isPlaying = false
     }
 
-    downloadRecording(){
-        //TODO
+    stopPlayRecording(){
+        this.isPlaying = false
+        this.currentFrame = 0
+        this.pointer.hidePointer()
+        this.background.hideBackground()
     }
 
-    uploadRecording(){
-        //TODO
+    downloadRecording(fileName){
+        let blob = new Blob([JSON.stringify(this.recording)], {type: "octet/stream"})
+        let url = window.URL.createObjectURL(blob);
+
+        this.download.href = url;
+        this.download.download = fileName;
+        this.download.click();
+            
+        window.URL.revokeObjectURL(url);
+    }
+
+    loadRecording(recording){
+        this.recording = recording
+    }
+
+    _createDownloadElement(){
+        this.download = document.createElement("a");
+        this.download.style = "display: none";
+        document.body.appendChild(this.download);
     }
 
     _handleClick(e){
         var event = {
-            type: "click",
+            t: "c", //click
             x: e.pageX,
             y: e.pageY,
-            duration: this._getDuration(),
+            d: this._getDuration(),
         }
         this.recording.push(event)
         console.log(event);
@@ -160,10 +186,10 @@ class Recording{
 
     _handleMouseMove(e){
         var event = {
-            type: "mouseMove",
+            t: "m", //mousemove
             x: e.pageX,
             y: e.pageY,
-            duration: this._getDuration(),
+            d: this._getDuration(),
         }
         this.recording.push(event)
         console.log(event);
@@ -171,9 +197,9 @@ class Recording{
 
     _handleBackgroundChange(e){
         var event = {
-            type: "backgroundChange",
-            img: "x",
-            duration: 0,
+            t: "b", //background change
+            i: "x",
+            d: 0,
         }
         this.recording.push(event)
         console.log(event);
@@ -186,28 +212,34 @@ class Recording{
         return duration
     }
 
-    _preformActions(index){
+    _executeFrames(index){
 
-        var action = this.recording[index]
-        console.log(action)
+        this.currentFrame = index
+
+        let frame = this.recording[index]
+        console.log(frame)
     
-        //Preform the action
-        if (action.type == "click") {
-           //TODO
+        if (frame.t == "c") {
+           //TODO click
         }
-        if (action.type == "mouseMove") {
-            this.pointer.movePointer(action.x, action.y)
+        if (frame.t == "m") {
+            this.pointer.movePointer(frame.x, frame.y)
         }
+        if (frame.t == "b") {
+            //TODO background change
+         }
     
         // Call recursion after a delay
         setTimeout(function() {
-            if (index < this.recording.length-1){
-                this._preformActions(index+1);
+            if(this.isPlaying){
+                if (index < this.recording.length-1){
+                    this._executeFrames(index+1);
+                }else{
+                    this.stopPlayRecording()
+                }
             }
-        }.bind(this), action.duration);
+        }.bind(this), frame.duration);
     
     }
 
 }
-
-var recording = new Recording(document.body, "img/pointer.png")
